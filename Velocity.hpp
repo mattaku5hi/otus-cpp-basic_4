@@ -30,9 +30,9 @@ class Velocity {
 
     friend std::istream& operator>>(std::istream& is, Velocity& velocity)
     {
-        double vx, vy;
-        is >> vx >> vy;
-        velocity = Velocity(vx, vy);
+        Point velocityVector{0.0, 0.0};
+        is >> velocityVector.x >> velocityVector.y;
+        velocity.setVector(velocityVector);
         return is;
     }
 

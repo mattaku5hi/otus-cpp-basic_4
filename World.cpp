@@ -1,5 +1,6 @@
 
 #include <fstream>
+#include <iostream>
 
 #include "Ball.hpp"
 #include "Painter.hpp"
@@ -28,12 +29,33 @@ World::World(const std::string& worldFilePath) {
      */
     // stream >> topLeft.x >> topLeft.y >> bottomRight.x >> bottomRight.y;
     Point topLeft{0.0, 0.0};
-    Point topRight{0.0, 0.0};
-    stream >> topLeft >> topRight;
+    Point bottomRight{0.0, 0.0};
+    stream >> topLeft >> bottomRight;
+    this->topLeft = topLeft;
+    this->bottomRight = bottomRight;
     physics.setWorldBox(topLeft, bottomRight);
 
-    Ball ballInstance;
-    ballInstance.readBallFromStream(stream, this->balls);
+    while(stream >> std::ws && stream.eof() == false)
+    {
+        Ball ball;
+        if(stream >> ball)
+        {
+            balls.push_back(ball);
+        }
+        else if(stream.eof() == true)
+        {
+            /* Ok, we've just reached the end of file */
+            break;
+        }
+        else
+        {
+            std::cerr << "Error: failed to completely parse input stream in function: " << __func__ << std::endl;
+            stream.clear();
+            stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            /* Better to raise an exception but we won't do it here */
+            return;
+        }
+    }
 }
 
 /// @brief Отображает состояние мира

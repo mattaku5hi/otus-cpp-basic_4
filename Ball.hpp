@@ -6,7 +6,8 @@
 #include "Point.hpp"
 #include "Velocity.hpp"
 
-class Ball {
+class Ball
+{
 private:
     Point m_center;
     Velocity m_velocity;
@@ -14,10 +15,10 @@ private:
     double m_radius;
     bool m_isCollidable;
 public:
-    Ball(void);
+    Ball();
     Ball(Point& center, Velocity& velocity, Color& color, double radius, const bool isCollidable);
     // Ball& operator=(const Ball&)=Ball(Point center, Velocity velocity, Color color, double radius, const bool isCollidable);
-    ~Ball();
+    ~Ball() = default;
     void setVelocity(const Velocity& velocity);
     Velocity getVelocity() const;
     void draw(Painter& painter) const;
@@ -26,6 +27,6 @@ public:
     double getRadius() const;
     double getMass() const;
     bool getIsCollidable(void) const;
-    bool readBallFromStream(std::istream& stream, Ball& ball);
-    bool readBallFromStream(std::istream& stream, std::vector<Ball>& balls);
 };
+
+std::istream& operator>>(std::istream& stream, Ball& ball);

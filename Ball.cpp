@@ -19,10 +19,6 @@ Ball::Ball(Point& center, Velocity& velocity, Color& color, double radius, const
 
 }
 
-Ball::~Ball()
-{
-
-}
 
 /**
  * Задает скорость объекта
@@ -98,7 +94,8 @@ double Ball::getMass() const {
     return mass;
 }
 
-bool Ball::readBallFromStream(std::istream& stream, Ball& ball)
+
+std::istream& operator>>(std::istream& stream, Ball& ball)
 {
     Point center;
     Velocity velocity;
@@ -109,42 +106,11 @@ bool Ball::readBallFromStream(std::istream& stream, Ball& ball)
     if(stream >> center >> velocity >> color >> radius >> std::boolalpha >> isCollidable)
     {
         ball = Ball(center, velocity, color, radius, isCollidable);
-        return true;
     }
     else
     {
-        return false;
-    }
-}
-
-bool Ball::readBallFromStream(std::istream& stream, std::vector<Ball>& balls)
-{
-    if(stream.good() == false)
-    {
-        std::cerr << "Error: failed to accept input stream in function: " << __func__ << std::endl;
-        return false;
+        stream.setstate(std::ios::failbit);
     }
 
-    Ball ball;
-    while(stream >> std::ws && stream.eof() == false)
-    {
-        if(this->readBallFromStream(stream, ball))
-        {
-            balls.push_back(ball);
-        }
-        else if(stream.eof() == true)
-        {
-            /* Ok, we've just reached the end of file */
-            break;
-        }
-        else
-        {
-            std::cerr << "Error: failed to completely parse input stream in function: " << __func__ << std::endl;
-            stream.clear();
-            stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            return false;
-        }
-    }
-
-    return true;
+    return stream;
 }
